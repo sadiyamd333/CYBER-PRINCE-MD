@@ -319,8 +319,8 @@
     <canvas id="matrix-canvas"></canvas>
     <canvas id="cyber-3d-canvas"></canvas>
 
-    <!-- Audio Player with Bemsolito Funk Direct Link -->
-    <audio id="bg-audio" loop>
+    <!-- Audio Player with Autoplay Attribute -->
+    <audio id="bg-audio" autoplay loop>
         <source src="https://rr2---sn-uxa7ln7z.googlevideo.com/videoplayback?expire=1773087547&ei=W2wQZ_z0B8S0r_wP58y-2Aw&ip=180.215.75.120&id=o-AEW1qM7a_xP6G28j3dZ8q9Jz5x3W2L1K0J9I8H7G6F5E&itag=140&source=youtube&requiressl=yes&xpc=EgVo2aDSNQ%3D%3D&mh=g8&mm=31%2C29&mn=sn-uxa7ln7z%2Csn-uxa7ln7z&ms=au%2Crdu&mv=m&mvi=2&pl=24&initcwndbps=203750&spc=UWF9K15qK1cT&vprv=1&svpuc=1&mime=audio%2Fmp4&ns=cn&gir=yes&clen=5108048&dur=284.815&lmt=1743681463991206&mt=1773065609&fvip=4&keepalive=yes&fexp=51000185%2C51000418&c=WEB&n=bX1X2K3L4M5N6O7P8&sparams=expire%2Cip%2Cid%2Citag%2Csource%2Crequiressl%2Cxpc%2Cspc%2Cvprv%2Csvpuc%2Cmime%2Cns%2Cgir%2Cclen%2Cdur%2Clmt&sig=AJfQdSswRgIhAIv8lhd5v_Keyyub8k_yub8k_yub8k_yub8k_yub8k_AiEA1f9G9G9G9G9G9G9G9G9&ratebypass=yes&rparams=res" type="audio/mp4">
     </audio>
 
@@ -330,7 +330,7 @@
             <div class="brand">CYBER_PRINCE//</div>
             <div class="audio-player-box">
                 <button class="play-btn" id="audio-toggle" onclick="toggleAudio()">
-                    <i class="fa-solid fa-play"></i>
+                    <i class="fa-solid fa-pause"></i>
                 </button>
                 <span style="font-size: 0.8rem; color: var(--main-green);">Bemsolito Funk 🎶</span>
             </div>
@@ -399,7 +399,7 @@
         </footer>
     </div>
 
-    <!-- Scripts for 3D Mesh, Matrix Rain & Audio -->
+    <!-- Scripts for 3D Mesh, Matrix Rain & Audio Auto-play Fallback -->
     <script>
         // 1. Matrix Rain Animation
         const matrixCanvas = document.getElementById('matrix-canvas');
@@ -463,7 +463,7 @@
             cCtx.clearRect(0, 0, cyberCanvas.width, cyberCanvas.height);
 
             for (let i = 0; i < points.length; i++) {
-                let p1 = points[i];
+                let p1 = points.points ? points[i] : points[i]; // safe reference
                 p1.x += p1.vx;
                 p1.y += p1.vy;
 
@@ -493,9 +493,27 @@
         }
         draw3DMesh();
 
-        // 3. Audio Toggle Control
+        // 3. Audio Auto-Play & Toggle Control
         const audio = document.getElementById('bg-audio');
         const btn = document.getElementById('audio-toggle');
+
+        // Try playing automatically on load
+        window.addEventListener('load', () => {
+            audio.play().then(() => {
+                btn.innerHTML = '<i class="fa-solid fa-pause"></i>';
+            }).catch(error => {
+                console.log("Autoplay blocked by browser policy until user interaction.");
+            });
+        });
+
+        // Also trigger play on first interaction anywhere on screen if blocked
+        document.body.addEventListener('click', function once() {
+            if (audio.paused) {
+                audio.play();
+                btn.innerHTML = '<i class="fa-solid fa-pause"></i>';
+            }
+            document.body.removeEventListener('click', once);
+        }, { once: true });
 
         function toggleAudio() {
             if (audio.paused) {
