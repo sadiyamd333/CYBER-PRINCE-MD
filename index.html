@@ -176,9 +176,11 @@
             background: #0f172a;
             border-radius: 10px;
             display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
             padding: 15px;
+            gap: 10px;
         }
         .image-result img {
             max-width: 100%;
@@ -206,17 +208,18 @@
     <div class="container">
         <!-- Mode Switcher -->
         <div class="tabs">
-            <button class="tab-btn active" onclick="switchTab('chat')">📚 AI Study Chat</button>
+            <button class="tab-btn active" onclick="switchTab('chat')">📚 AI Study Chat (All Languages)</button>
             <button class="tab-btn" onclick="switchTab('image')">🎨 AI Photo Generator</button>
         </div>
 
         <!-- Study Chat Section -->
         <div id="chat-section" class="section active">
             <div class="chat-box" id="chat-box">
-                <div class="message ai-msg">ආයුබෝවන්! මම ඔයාගේ AI Study Assistant. ඕනෑම පාඩමක්, ප්‍රශ්නයක් මගෙන් අහන්න.</div>
+                <div class="message ai-msg">ආයුබෝවන්! Hello! வணக்கம்! 
+ඕනෑම භාෂාවකින් (සිංහල, English, தமிழ், etc.) ඔයාගේ ප්‍රශ්න අහන්න. මම ඒ භාෂාවෙන්ම උත්තර දෙන්නම්!</div>
             </div>
             <div class="input-group">
-                <input type="text" id="chat-input" placeholder="ඔයාගේ ප්‍රශ්නය මෙතන type කරන්න..." onkeypress="if(event.key === 'Enter') sendMessage()">
+                <input type="text" id="chat-input" placeholder="ඕනෑම භාෂාවකින් ප්‍රශ්නයක් අහන්න..." onkeypress="if(event.key === 'Enter') sendMessage()">
                 <button class="action-btn" id="send-btn" onclick="sendMessage()">Ask AI</button>
             </div>
         </div>
@@ -224,7 +227,7 @@
         <!-- Image Generator Section -->
         <div id="image-section" class="section">
             <div class="input-group">
-                <input type="text" id="image-input" placeholder="ඔයාට හදාගන්න ඕනේ photo එක විස්තර කරන්න (English වලින්)..." onkeypress="if(event.key === 'Enter') generateImage()">
+                <input type="text" id="image-input" placeholder="ඕනෑම භාෂාවකින් photo එක විස්තර කරන්න..." onkeypress="if(event.key === 'Enter') generateImage()">
                 <button class="action-btn" id="gen-btn" onclick="generateImage()">Generate</button>
             </div>
             <div class="image-result" id="image-result">
@@ -255,19 +258,18 @@
 
             if (!question) return;
 
-            // Add user message
             chatBox.innerHTML += `<div class="message user-msg">${question}</div>`;
             input.value = '';
             sendBtn.disabled = true;
             chatBox.scrollTop = chatBox.scrollHeight;
 
-            // Add loading indicator
             const loadingId = 'loading-' + Date.now();
             chatBox.innerHTML += `<div class="message ai-msg" id="${loadingId}">හිතමින් පවතී... ⏳</div>`;
             chatBox.scrollTop = chatBox.scrollHeight;
 
             try {
-                const prompt = `You are a helpful study assistant. Answer clearly: ${question}`;
+                // Instruct AI to detect the user's language and reply in the exact same language
+                const prompt = `You are a helpful, intelligent study assistant. Detect the language of the user's question and answer clearly and accurately in that exact same language. User question: ${question}`;
                 const response = await fetch(`https://text.pollinations.ai/${encodeURIComponent(prompt)}`);
                 const answer = await response.text();
                 
@@ -280,26 +282,40 @@
             chatBox.scrollTop = chatBox.scrollHeight;
         }
 
-        function generateImage() {
+        async function generateImage() {
             const input = document.getElementById('image-input');
             const resultDiv = document.getElementById('image-result');
-            const prompt = input.value.trim();
+            const genBtn = document.getElementById('gen-btn');
+            const userPrompt = input.value.trim();
 
-            if (!prompt) return;
+            if (!userPrompt) return;
 
+            genBtn.disabled = true;
             resultDiv.innerHTML = `<span class="loading-text">Photo එක නිර්මාණය වෙමින් පවතී... ⏳</span>`;
             
-            const imageUrl = `https://image.pollinations.ai/prompt/${encodeURIComponent(prompt)}?nologo=true&seed=${Math.floor(Math.random() * 10000)}`;
-            
-            const img = new Image();
-            img.src = imageUrl;
-            img.onload = function() {
-                resultDiv.innerHTML = '';
-                resultDiv.appendChild(img);
-            };
-            img.onerror = function() {
-                resultDiv.innerHTML = `<span style="color: #ef4444;">Photo එක සෑදීමට නොහැකි විය. නැවත උත්සාහ කරන්න.</span>`;
-            };
+            try {
+                // Translate any language prompt into a detailed English prompt for best image quality
+                const translatePrompt = `Translate the following image description into a clear, detailed English prompt for an AI image generator. Only output the English prompt, nothing else: "${userPrompt}"`;
+                const transRes = await fetch(`https://text.pollinations.ai/${encodeURIComponent(translatePrompt)}`);
+                const englishPrompt = await transRes.text();
+
+                const imageUrl = `https://image.pollinations.ai/prompt/${encodeURIComponent(englishPrompt.trim())}?nologo=true&seed=${Math.floor(Math.random() * 10000)}`;
+                
+                const img = new Image();
+                img.src = imageUrl;
+                img.onload = function() {
+                    resultDiv.innerHTML = '';
+                    resultDiv.appendChild(img);
+                    genBtn.disabled = false;
+                };
+                img.onerror = function() {
+                    resultDiv.innerHTML = `<span style="color: #ef4444;">Photo එක සෑදීමට නොහැකි විය. නැවත උත්සාහ කරන්න.</span>`;
+                    genBtn.disabled = false;
+                };
+            } catch (error) {
+                resultDiv.innerHTML = `<span style="color: #ef4444;">දෝෂයක් ඇති විය. නැවත උත්සාහ කරන්න.</span>`;
+                genBtn.disabled = false;
+            }
         }
     </script>
 </body>
