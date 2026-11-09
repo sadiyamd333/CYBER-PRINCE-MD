@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -113,8 +112,8 @@
       btn.disabled = true;
 
       try {
-        // Vercel Serverless Function haraha request eka yawannai meka hadala thiyenne
-        const response = await fetch('/api/generate', {
+        // Netlify Functions haraha request eka yawannai meka update kale
+        const response = await fetch('/.netlify/functions/generate', {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
