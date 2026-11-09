@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AI Study Helper - Smart Learning</title>
+  <title>AI Study Helper - By Armash Ahzan</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
     body { background: #0f172a; color: #f8fafc; min-height: 100vh; display: flex; flex-direction: column; align-items: center; padding: 20px; }
@@ -12,7 +12,6 @@
     h1 { text-align: center; color: #38bdf8; margin-bottom: 5px; font-size: 1.8rem; }
     p.subtitle { text-align: center; color: #94a3b8; font-size: 0.9rem; margin-bottom: 20px; }
     
-    /* Ad Space */
     .ad-box { background: #0f172a; border: 1px dashed #475569; color: #64748b; text-align: center; padding: 15px; margin: 15px 0; border-radius: 8px; font-size: 0.85rem; }
 
     label { display: block; margin-bottom: 8px; font-weight: 600; color: #cbd5e1; font-size: 0.9rem; }
@@ -26,45 +25,64 @@
 
     .result-box { margin-top: 20px; background: #0f172a; padding: 18px; border-radius: 10px; border: 1px solid #334155; display: none; white-space: pre-wrap; line-height: 1.6; font-size: 0.95rem; }
     .loader { text-align: center; display: none; margin-top: 15px; color: #38bdf8; font-weight: bold; }
+
+    .owner-card { margin-top: 25px; background: #0f172a; padding: 18px; border-radius: 12px; border: 1px solid #334155; text-align: center; }
+    .owner-card h3 { color: #38bdf8; margin-bottom: 8px; font-size: 1.1rem; }
+    .owner-details { color: #cbd5e1; font-size: 0.9rem; line-height: 1.6; margin-bottom: 12px; }
+    .contact-text { color: #94a3b8; font-size: 0.85rem; margin-bottom: 12px; }
+    .whatsapp-btn { display: inline-block; background: #25D366; color: #ffffff; text-decoration: none; padding: 10px 20px; border-radius: 8px; font-weight: bold; font-size: 0.95rem; transition: 0.3s; }
+    .whatsapp-btn:hover { background: #1ebe57; transform: translateY(-1px); }
+
+    footer { margin-top: 20px; text-align: center; color: #64748b; font-size: 0.85rem; font-weight: 600; letter-spacing: 0.5px; }
   </style>
 </head>
 <body>
 
   <div class="container">
     <h1>🎓 AI Study Helper</h1>
-    <p class="subtitle">Onaama padamak lesiyen igena ganna (Sinhala & English)</p>
+    <p class="subtitle">Works in Any Language (සිංහල, English, தமிழ், etc.)</p>
 
-    <!-- Top Ad Banner -->
     <div class="ad-box">
       [ Adsterra / AdSense Banner Code Methanata Danna ]
     </div>
 
-    <label for="mode">Mokakda karanna one?</label>
+    <label for="mode">Select Action / What do you want to do?</label>
     <select id="mode">
-      <option value="explain">Prashnayak ahanna / Padamak therum ganna</option>
-      <option value="summarize">Diga note ekak ketiyen saralawa hadanna (Summarize)</option>
-      <option value="quiz">MCQ Prashna 5k hadanna (Quiz)</option>
-      <option value="sinhala">Sinhala theruma saha pahadili kirima ganna</option>
+      <option value="explain">Explain Question / Learn Topic</option>
+      <option value="summarize">Summarize Notes into Bullet Points</option>
+      <option value="quiz">Generate 5 MCQ Questions with Answers</option>
+      <option value="translate_simple">Explain simply in the same language</option>
     </select>
 
-    <label for="userInput">Oyage prashnaya ho note eka methanata danna:</label>
-    <textarea id="userInput" placeholder="Udaharana: Photosynthesis kiyanne mokakda? / Me note eka summarize karanna..."></textarea>
+    <label for="userInput">Enter your question, notes, or topic (in any language):</label>
+    <textarea id="userInput" placeholder="Type here in Sinhala, English, Tamil, or any language..."></textarea>
 
     <button id="submitBtn" onclick="askAI()">✨ Generate Answer</button>
 
-    <div class="loader" id="loader">⏳ AI hithanawa... Poddak inna...</div>
+    <div class="loader" id="loader">⏳ AI is thinking... Please wait...</div>
     <div class="result-box" id="resultBox"></div>
 
-    <!-- Bottom Ad Banner -->
     <div class="ad-box">
       [ Adsterra / AdSense Bottom Ad Code Methanata Danna ]
     </div>
+
+    <div class="owner-card">
+      <h3>👨‍💻 Website Owner</h3>
+      <div class="owner-details">
+        <strong>Name:</strong> Armash Ahzan<br>
+        <strong>Role:</strong> Website Maker | <strong>Age:</strong> 18<br>
+        <strong>From:</strong> Kandy
+      </div>
+      <p class="contact-text">If you need any help or want any work done by me, please send a message to this number:</p>
+      <a href="https://wa.me/94761029285" target="_blank" class="whatsapp-btn">💬 Contact on WhatsApp</a>
+    </div>
+
+    <footer>
+      MADE BY CYBER PRINCE OFC
+    </footer>
   </div>
 
   <script>
-    // Methanata oyage Gemini API Key eka danna
-    const API_KEY = "YOUR_GEMINI_API_KEY"; 
-
     async function askAI() {
       const mode = document.getElementById("mode").value;
       const input = document.getElementById("userInput").value.trim();
@@ -73,24 +91,21 @@
       const btn = document.getElementById("submitBtn");
 
       if (!input) {
-        alert("Karunakara prashnayak ho note ekak type karanna!");
+        alert("Please enter a question or notes! / කරුණාකර ප්‍රශ්නයක් හෝ සටහනක් ඇතුළත් කරන්න!");
         return;
       }
 
-      if (API_KEY === "YOUR_GEMINI_API_KEY") {
-        alert("Code eke 'YOUR_GEMINI_API_KEY' thanata oyage API key eka danna!");
-        return;
-      }
+      let systemInstruction = "You are a helpful, brilliant AI study tutor. Detect the language of the user's input automatically and respond in that exact same language. Provide clear, accurate, and structured educational help.";
 
-      let promptPrefix = "";
+      let taskPrompt = "";
       if (mode === "explain") {
-        promptPrefix = "You are a helpful Sri Lankan study tutor. Explain this clearly and simply for a student (in the same language the user asked, or Sinhala/English as appropriate): ";
+        taskPrompt = "Explain this clearly and simply: ";
       } else if (mode === "summarize") {
-        promptPrefix = "Summarize the following study notes into clear, easy-to-remember bullet points: ";
+        taskPrompt = "Summarize the following notes into clear, easy-to-remember bullet points: ";
       } else if (mode === "quiz") {
-        promptPrefix = "Create 5 multiple-choice questions (MCQs) with answers at the bottom based on this topic/text: ";
-      } else if (mode === "sinhala") {
-        promptPrefix = "Explain this topic in simple, clear Sinhala for a student: ";
+        taskPrompt = "Create 5 multiple-choice questions (MCQs) with correct answers at the bottom based on this topic/text: ";
+      } else if (mode === "translate_simple") {
+        taskPrompt = "Explain this topic in very simple terms using the same language: ";
       }
 
       loader.style.display = "block";
@@ -98,25 +113,26 @@
       btn.disabled = true;
 
       try {
-        const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${API_KEY}`, {
+        // Vercel Serverless Function haraha request eka yawannai meka hadala thiyenne
+        const response = await fetch('/api/generate', {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-            contents: [{ parts: [{ text: promptPrefix + input }] }]
+            prompt: systemInstruction + "\n\nTask: " + taskPrompt + input
           })
         });
 
         const data = await response.json();
         
-        if (data.candidates && data.candidates[0].content.parts[0].text) {
-          resultBox.innerText = data.candidates[0].content.parts[0].text;
+        if (data.reply) {
+          resultBox.innerText = data.reply;
           resultBox.style.display = "block";
         } else {
-          resultBox.innerText = "Error: Uththarayak ganna bari una. API Key eka check karanna.";
+          resultBox.innerText = "Error: Could not get a response. Please check server settings.";
           resultBox.style.display = "block";
         }
       } catch (error) {
-        resultBox.innerText = "Network error ekak! Internet connection eka check karanna.";
+        resultBox.innerText = "Network error! Please check your internet connection.";
         resultBox.style.display = "block";
       } finally {
         loader.style.display = "none";
