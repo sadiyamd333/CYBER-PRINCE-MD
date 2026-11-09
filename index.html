@@ -1,86 +1,3 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AI Study Helper - By Armash Ahzan</title>
-  <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-    body { background: #0f172a; color: #f8fafc; min-height: 100vh; display: flex; flex-direction: column; align-items: center; padding: 20px; }
-    .container { width: 100%; max-width: 700px; background: #1e293b; padding: 25px; border-radius: 16px; box-shadow: 0 10px 25px rgba(0,0,0,0.5); border: 1px solid #334155; }
-    h1 { text-align: center; color: #38bdf8; margin-bottom: 5px; font-size: 1.8rem; }
-    p.subtitle { text-align: center; color: #94a3b8; font-size: 0.9rem; margin-bottom: 20px; }
-    
-    .ad-box { background: #0f172a; border: 1px dashed #475569; color: #64748b; text-align: center; padding: 15px; margin: 15px 0; border-radius: 8px; font-size: 0.85rem; }
-
-    label { display: block; margin-bottom: 8px; font-weight: 600; color: #cbd5e1; font-size: 0.9rem; }
-    select, textarea { width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #475569; background: #0f172a; color: #f8fafc; margin-bottom: 15px; font-size: 1rem; outline: none; }
-    select:focus, textarea:focus { border-color: #38bdf8; }
-    textarea { resize: vertical; min-height: 120px; }
-
-    button { width: 100%; padding: 14px; background: linear-gradient(135deg, #0284c7, #2563eb); color: white; border: none; border-radius: 8px; font-size: 1rem; font-weight: bold; cursor: pointer; transition: 0.3s; }
-    button:hover { opacity: 0.9; transform: translateY(-1px); }
-    button:disabled { background: #475569; cursor: not-allowed; }
-
-    .result-box { margin-top: 20px; background: #0f172a; padding: 18px; border-radius: 10px; border: 1px solid #334155; display: none; white-space: pre-wrap; line-height: 1.6; font-size: 0.95rem; }
-    .loader { text-align: center; display: none; margin-top: 15px; color: #38bdf8; font-weight: bold; }
-
-    .owner-card { margin-top: 25px; background: #0f172a; padding: 18px; border-radius: 12px; border: 1px solid #334155; text-align: center; }
-    .owner-card h3 { color: #38bdf8; margin-bottom: 8px; font-size: 1.1rem; }
-    .owner-details { color: #cbd5e1; font-size: 0.9rem; line-height: 1.6; margin-bottom: 12px; }
-    .contact-text { color: #94a3b8; font-size: 0.85rem; margin-bottom: 12px; }
-    .whatsapp-btn { display: inline-block; background: #25D366; color: #ffffff; text-decoration: none; padding: 10px 20px; border-radius: 8px; font-weight: bold; font-size: 0.95rem; transition: 0.3s; }
-    .whatsapp-btn:hover { background: #1ebe57; transform: translateY(-1px); }
-
-    footer { margin-top: 20px; text-align: center; color: #64748b; font-size: 0.85rem; font-weight: 600; letter-spacing: 0.5px; }
-  </style>
-</head>
-<body>
-
-  <div class="container">
-    <h1>🎓 AI Study Helper</h1>
-    <p class="subtitle">Works in Any Language (සිංහල, English, தமிழ், etc.)</p>
-
-    <div class="ad-box">
-      [ Adsterra / AdSense Banner Code Methanata Danna ]
-    </div>
-
-    <label for="mode">Select Action / What do you want to do?</label>
-    <select id="mode">
-      <option value="explain">Explain Question / Learn Topic</option>
-      <option value="summarize">Summarize Notes into Bullet Points</option>
-      <option value="quiz">Generate 5 MCQ Questions with Answers</option>
-      <option value="translate_simple">Explain simply in the same language</option>
-    </select>
-
-    <label for="userInput">Enter your question, notes, or topic (in any language):</label>
-    <textarea id="userInput" placeholder="Type here in Sinhala, English, Tamil, or any language..."></textarea>
-
-    <button id="submitBtn" onclick="askAI()">✨ Generate Answer</button>
-
-    <div class="loader" id="loader">⏳ AI is thinking... Please wait...</div>
-    <div class="result-box" id="resultBox"></div>
-
-    <div class="ad-box">
-      [ Adsterra / AdSense Bottom Ad Code Methanata Danna ]
-    </div>
-
-    <div class="owner-card">
-      <h3>👨‍💻 Website Owner</h3>
-      <div class="owner-details">
-        <strong>Name:</strong> Armash Ahzan<br>
-        <strong>Role:</strong> Website Maker | <strong>Age:</strong> 18<br>
-        <strong>From:</strong> Kandy
-      </div>
-      <p class="contact-text">If you need any help or want any work done by me, please send a message to this number:</p>
-      <a href="https://wa.me/94761029285" target="_blank" class="whatsapp-btn">💬 Contact on WhatsApp</a>
-    </div>
-
-    <footer>
-      MADE BY CYBER PRINCE OFC
-    </footer>
-  </div>
-
   <script>
     async function askAI() {
       const mode = document.getElementById("mode").value;
@@ -112,7 +29,6 @@
       btn.disabled = true;
 
       try {
-        // Netlify Functions haraha request eka yawannai meka update kale
         const response = await fetch('/.netlify/functions/generate', {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -123,15 +39,16 @@
 
         const data = await response.json();
         
-        if (data.reply) {
+        if (response.ok && data.reply) {
           resultBox.innerText = data.reply;
           resultBox.style.display = "block";
         } else {
-          resultBox.innerText = "Error: Could not get a response. Please check server settings.";
+          // Me thanadi server eken enna exact error eka screen eke pennai
+          resultBox.innerText = "Server Error Details: " + (data.error || JSON.stringify(data));
           resultBox.style.display = "block";
         }
       } catch (error) {
-        resultBox.innerText = "Network error! Please check your internet connection.";
+        resultBox.innerText = "Network error: " + error.message;
         resultBox.style.display = "block";
       } finally {
         loader.style.display = "none";
@@ -139,6 +56,3 @@
       }
     }
   </script>
-
-</body>
-</html>
